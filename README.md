@@ -86,6 +86,133 @@ Once configured, you can ask Claude to interact with your Todoist account:
 
 - `search` - Search across tasks with complex filtering
 
+## Running the MCP Server
+
+There are multiple ways to run the Todoist MCP server:
+
+### Method 1: Direct Command Line
+
+Run the server in a terminal window:
+
+```bash
+# Set your API token
+export TODOIST_API_TOKEN=your_api_token_here
+
+# Run the server using UV
+uvx mcp-todoist
+
+# Alternative: Run from source
+cd /path/to/mcp-todoist
+uv run python -m mcp_todoist
+```
+
+Keep this terminal window open while using Claude Desktop.
+
+### Method 2: Using a Startup Script (Recommended)
+
+Create a startup script that Claude Desktop can use to automatically start the server:
+
+1. Create a file named `start-todoist-mcp.sh` with the following content:
+
+```bash
+#!/bin/bash
+
+# Set environment variables
+export MCP_SERVER_NAME="mcp-todoist"
+export MCP_LOG_LEVEL="INFO"
+export MCP_DEBUG="true"
+export TODOIST_API_TOKEN="your_todoist_api_token_here"
+
+# Path to your Todoist MCP server
+MCP_PATH="/path/to/mcp-todoist"
+
+# Log file for debugging
+LOG_FILE="${MCP_PATH}/todoist-mcp.log"
+
+# Create log file or clear existing one
+echo "Starting Todoist MCP server at $(date)" > "${LOG_FILE}"
+
+# Navigate to the project directory
+cd "${MCP_PATH}"
+
+# Start the MCP server
+echo "Starting MCP server from ${MCP_PATH}" >> "${LOG_FILE}"
+uv run python -m mcp_todoist >> "${LOG_FILE}" 2>&1
+```
+
+2. Make the script executable:
+
+```bash
+chmod +x start-todoist-mcp.sh
+```
+
+3. Update your Claude Desktop configuration to use this script:
+
+```json
+{
+  "mcpServers": {
+    "mcp-todoist": {
+      "command": "/absolute/path/to/start-todoist-mcp.sh",
+      "args": []
+    }
+  }
+}
+```
+
+This approach offers several advantages:
+- The server starts automatically with Claude Desktop
+- All logs are captured in a file for easier debugging
+- Environment variables are set consistently
+
+## Debugging
+
+If you encounter issues with the MCP server, here are some debugging strategies:
+
+### 1. Check the Logs
+
+If using the startup script, check the log file:
+
+```bash
+cat /path/to/mcp-todoist/todoist-mcp.log
+```
+
+### 2. Enable Debug Mode
+
+Set the `MCP_DEBUG` environment variable to `true` for more verbose logging:
+
+```bash
+export MCP_DEBUG=true
+uvx mcp-todoist
+```
+
+### 3. Verify API Token
+
+Ensure your Todoist API token is correct and still valid:
+
+```bash
+# Test the token with a simple curl request
+curl -X GET \
+  https://api.todoist.com/rest/v2/projects \
+  -H "Authorization: Bearer $TODOIST_API_TOKEN"
+```
+
+### 4. Use the MCP Inspector
+
+The MCP Inspector is a powerful tool for debugging MCP servers:
+
+```bash
+npx @modelcontextprotocol/inspector uvx mcp-todoist
+```
+
+This will open a web interface showing all communications between Claude and the MCP server.
+
+### 5. Common Issues and Solutions
+
+- **"MCP Server not available" error**: Ensure the server is running in a separate terminal or via a startup script.
+- **Authentication errors**: Check that your Todoist API token is correctly set in your environment.
+- **"Command not found" errors**: Make sure Astral UV is installed and in your PATH.
+- **Timeout errors**: If your MCP server is slow to respond, try increasing the timeout in Claude Desktop settings.
+
 ## Development
 
 ### Setup
