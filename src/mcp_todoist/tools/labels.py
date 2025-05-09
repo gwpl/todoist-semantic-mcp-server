@@ -88,7 +88,7 @@ def register_label_tools(server: Server) -> None:
                         "favorite": {
                             "type": "boolean",
                             "description": "Whether the label is a favorite",
-                            "default": false
+                            "default": True
                         }
                     },
                     "required": ["name"]

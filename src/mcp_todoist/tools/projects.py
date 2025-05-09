@@ -98,7 +98,7 @@ def register_project_tools(server: Server) -> None:
                         "favorite": {
                             "type": "boolean",
                             "description": "Whether the project is a favorite",
-                            "default": false
+                            "default": True
                         }
                     },
                     "required": ["name"]

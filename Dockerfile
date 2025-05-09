@@ -25,4 +25,9 @@ RUN pip install --no-cache-dir . \
 EXPOSE 3742
 
 # Default command: start the MCP Todoist server
-CMD ["mcp-todoist"]
+# Copy launch script and set as entrypoint
+COPY start-todoist-mcp.sh /usr/local/bin/start-todoist-mcp.sh
+RUN chmod +x /usr/local/bin/start-todoist-mcp.sh
+
+ENTRYPOINT ["/usr/local/bin/start-todoist-mcp.sh"]
+CMD []
