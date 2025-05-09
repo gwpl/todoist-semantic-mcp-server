@@ -1,5 +1,31 @@
 # MCP Todoist
 
+---
+
+## 📝 Fork Motivation: Towards Semantic, Human- and LLM-Friendly MCP Servers
+
+This repository is a fork motivated by my observations and frustrations with the current landscape of MCP (Model Context Protocol) servers for Todoist and similar tools. Most existing MCP servers are essentially carbon copies of the underlying REST APIs—they simply expose the same endpoints and function calls, often with little thought to how LLMs or humans actually interact with these systems.
+
+### Why fork? Why "semantic"?
+
+- **API ≠ Usable Interface:** The direct mapping of REST endpoints to MCP tools leads to poor usability. For example, if you ask for a list of projects and have thousands (as I do, after a decade of use), the server just dumps them all, overwhelming both the LLM and the user, and sometimes even causing crashes.
+- **LLM/Voice/Imprecise Input:** When interacting with LLMs—especially via voice—names may be misspelled or ambiguous. Existing servers fail to handle this gracefully, so you might end up with duplicate tasks or projects just because of a minor spelling difference.
+- **Too Many Rounds, Too Much Data:** LLMs struggle when they have to sift through huge lists or make many round-trips to find the right item. This is not a good user experience.
+
+### My approach
+
+This fork aims to start addressing these issues by introducing more *semantic* and *LLM-friendly* tool calls. For example:
+- **Search with limits:** Allowing the model to request only a manageable number of results.
+- **Fuzzy search:** Enabling the model to find the right task or project even if the name is not an exact match.
+
+This is just the beginning—my goal is to make MCP servers that are truly *semantic*, meaning they are designed for how humans and LLMs actually interact, not just for mirroring an API. I may eventually create a separate repository with a "manifesto" for semantic MCP servers and more general tools for this approach. This repo is not as semantic as I would ultimately like, but I need to start somewhere.
+
+**I hope these changes will help my workflow and, hopefully, yours too. If you have struggled with existing integrations that overwhelm LLMs or require too many steps to get things done, this fork is for you.**
+
+*TODO: Add links to related discussions, manifesto, and other semantic MCP server resources here.*
+
+---
+
 A Model Context Protocol (MCP) server that enables Claude to interact with your Todoist account.
 
 ## Features
