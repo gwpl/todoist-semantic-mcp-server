@@ -349,3 +349,21 @@ uv run python -m mcp_todoist
 ## License
 
 MIT License - see LICENSE file for details.
+
+---
+
+## Manual Debugging via mcptools
+
+Manual debugging or direct command-line usage of the MCP Todoist tool can be done using [mcptools](https://github.com/f/mcptools). Assuming you have Go installed, install mcptools on Linux with:
+
+```bash
+go install github.com/f/mcptools/cmd/mcptools@latest
+```
+
+Once installed, you can list the available Todoist MCP tools:
+
+```bash
+export TODOIST_API_TOKEN=your_api_token_here
+mcptools tools docker run -i --rm -e TODOIST_API_TOKEN mcp-todoist
+```
+
