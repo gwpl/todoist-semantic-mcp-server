@@ -9,7 +9,7 @@ import asyncio
 from typing import Any, Dict, List, Optional, Union, cast
 
 from todoist_api_python.api import TodoistAPI
-from todoist_api_python.endpoints import get_sync_url, get_rest_url
+# endpoints import removed: no longer needed or available in latest SDK
 from todoist_api_python.models import (
     Task, Project, Label, Comment, Section, Collaborator
 )

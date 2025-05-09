@@ -188,6 +188,76 @@ chmod +x start-todoist-mcp.sh
 }
 ```
 
+---
+## Docker Deployment
+
+The following instructions show how to build and run the MCP Todoist server in Docker.
+
+### 1. Build the Docker Image
+
+```bash
+# From the project root (contains Dockerfile above)
+docker build -t mcp-todoist .
+```
+
+### 2. Configure Environment Variables
+
+The container requires at least:
+- `TODOIST_API_TOKEN`: your Todoist API token
+- `TODOIST_SERVER_CONFIG_JSON` (optional): JSON string for extra server settings, e.g. `{"defaultLimit":50}`
+
+#### a) Using an `.env` file (simple)
+
+1. Create a file named `.env` next to your Dockerfile:
+
+   ```ini
+   TODOIST_API_TOKEN=your_api_token_here
+   TODOIST_SERVER_CONFIG_JSON={"defaultLimit":50}
+   ```
+
+2. Run the container:
+
+   ```bash
+   docker run -d \
+     --name mcp-todoist \
+     --env-file .env \
+     -p 127.0.0.1:3742:3742 \
+     --restart unless-stopped \
+     mcp-todoist
+   ```
+
+3. View logs:
+
+   ```bash
+   docker logs mcp-todoist
+   ```
+
+To update your token or config, edit `.env` and then:  
+```bash
+docker restart mcp-todoist
+```
+
+#### b) Using Docker secrets (secure, Swarm/Kubernetes)
+
+For production, avoid passing secrets on the CLI or embedding them in image layers. Use Docker secrets or a secrets manager.
+
+1. Create a secret (example in Swarm):
+   ```bash
+   echo -n "your_api_token_here" | docker secret create todoist_token -
+   ```
+
+2. Deploy the container referencing the secret:
+   ```bash
+   docker service create \
+     --name mcp-todoist \
+     --secret source=todoist_token,target=TODOIST_API_TOKEN \
+     -p 127.0.0.1:3742:3742 \
+     --restart-condition any \
+     mcp-todoist
+   ```
+
+Refer to Docker/Swarm documentation for updating secrets and rolling restarts.
+
 This approach offers several advantages:
 - The server starts automatically with Claude Desktop
 - All logs are captured in a file for easier debugging
