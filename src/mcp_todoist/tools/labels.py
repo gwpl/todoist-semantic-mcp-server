@@ -50,7 +50,15 @@ def register_label_tools(server: Server) -> None:
                 ),
                 inputSchema={
                     "type": "object",
-                    "properties": {}
+                    "properties": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maximum number of labels to return",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 50
+                        }
+                    }
                 },
             ),
             types.Tool(
@@ -202,6 +210,10 @@ async def handle_list_labels(
     
     # Get labels
     labels = await client.get_labels()
+    # Apply limit if provided
+    limit = arguments.get("limit") if isinstance(arguments, dict) else None
+    if isinstance(limit, int) and limit > 0:
+        labels = labels[:limit]
     
     # Build response
     if not labels:

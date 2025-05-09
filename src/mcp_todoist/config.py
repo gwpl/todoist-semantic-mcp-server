@@ -10,6 +10,7 @@ import logging
 from enum import Enum
 from typing import Optional, Dict, Any, cast
 from dataclasses import dataclass, field
+import json
 
 # Try to load environment variables from .env file if python-dotenv is available
 try:
@@ -99,13 +100,22 @@ class Config:
             request_timeout=request_timeout,
             rate_limit_retry=rate_limit_retry,
         )
-        
+        # Parse optional server configuration parameters from JSON
+        server_config: Dict[str, Any] = {}
+        server_config_json = os.environ.get("TODOIST_SERVER_CONFIG_JSON")
+        if server_config_json:
+            try:
+                server_config = json.loads(server_config_json)
+            except Exception:
+                logger.warning("Invalid TODOIST_SERVER_CONFIG_JSON; ignoring invalid JSON")
+        # Build final configuration
         return cls(
             server_name=server_name,
             server_version=server_version,
             log_level=log_level,
             debug=debug,
             todoist=todoist_config,
+            extra=server_config,
         )
     
     def to_dict(self) -> Dict[str, Any]:

@@ -60,8 +60,13 @@ uvx mcp-todoist
    # Add to your .env file or environment
    TODOIST_API_TOKEN=your_api_token_here
    ```
+3. (Optional) Customize server behavior via JSON config:
+   ```bash
+   # Provide default limits and thresholds
+   export TODOIST_SERVER_CONFIG_JSON='{"defaultLimit":50,"fuzzyThreshold":80}'
+   ```
 
-3. Configure Claude Desktop:
+4. Configure Claude Desktop:
    ```json
    // ~/.config/claude/claude_desktop_config.json or equivalent
    {
@@ -74,7 +79,7 @@ uvx mcp-todoist
    }
    ```
 
-### 3. Using with Claude
+### 5. Using with Claude
 
 Once configured, you can ask Claude to interact with your Todoist account:
 
@@ -108,9 +113,7 @@ Once configured, you can ask Claude to interact with your Todoist account:
 - `update-label` - Update a label
 - `delete-label` - Delete a label
 
-### Utilities
-
-- `search` - Search across tasks with complex filtering
+<!-- Removed obsolete search utility; no generic search tool implemented -->
 
 ## Running the MCP Server
 

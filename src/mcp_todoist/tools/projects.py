@@ -51,7 +51,15 @@ def register_project_tools(server: Server) -> None:
                 ),
                 inputSchema={
                     "type": "object",
-                    "properties": {}
+                    "properties": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maximum number of projects to return",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 50
+                        }
+                    }
                 },
             ),
             types.Tool(
@@ -212,6 +220,10 @@ async def handle_list_projects(
     
     # Get projects
     projects = await client.get_projects()
+    # Apply limit if provided
+    limit = arguments.get("limit") if isinstance(arguments, dict) else None
+    if isinstance(limit, int) and limit > 0:
+        projects = projects[:limit]
     
     # Build project tree
     project_map = {project.id: ProjectMCPOutput.from_todoist(project) for project in projects}
